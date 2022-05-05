@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "53b15880-df0f-40d1-82e7-bbb16ada0688",
+		"name": "Gorest test API collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set('userName', pm.variables.replaceIn(`{{$randomFullName}}`));",
+							"pm.environment.set('userEmail', pm.variables.replaceIn(`{{$randomEmail}}`));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Gorest API allows to create a user', () => {",
+							"    pm.expect(pm.response.code).to.eql(201);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.id).to.be.a('number');",
+							"    pm.expect(responseJson.name).eql(pm.environment.get(\"userName\"));",
+							"    pm.expect(responseJson.email).eql(pm.environment.get(\"userEmail\"));",
+							"    pm.expect(responseJson.gender).eql('male')",
+							"    pm.expect(responseJson.status).eql('active');",
+							"",
+							"    pm.environment.set('id', pm.variables.replaceIn(responseJson.id));",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{userName}}\",\n    \"gender\": \"male\",\n    \"email\": \"{{userEmail}}\",\n    \"status\": \"active\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Gorest API allows to get created user data', () => {",
+							"    pm.expect(pm.response.code).to.eql(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.id).eql(pm.environment.get(\"id\"));",
+							"    pm.expect(responseJson.name).eql(pm.environment.get(\"userName\"));",
+							"    pm.expect(responseJson.email).eql(pm.environment.get(\"userEmail\"));",
+							"    pm.expect(responseJson.gender).eql('male')",
+							"    pm.expect(responseJson.status).eql('active');",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{id}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set('userName', pm.variables.replaceIn(`{{$randomFullName}}`));",
+							"pm.environment.set('userEmail', pm.variables.replaceIn(`{{$randomEmail}}`));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Gorest API allows to update user', () => {",
+							"    pm.expect(pm.response.code).to.eql(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.id).to.be.a('number');",
+							"    pm.expect(responseJson.name).eql(pm.environment.get(\"userName\"));",
+							"    pm.expect(responseJson.email).eql(pm.environment.get(\"userEmail\"));",
+							"    pm.expect(responseJson.gender).eql('female')",
+							"    pm.expect(responseJson.status).eql('inactive');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{userName}}\",\n    \"gender\": \"female\",\n    \"email\": \"{{userEmail}}\",\n    \"status\": \"inactive\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{id}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get updated user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Gorest API allows to get updated user data', () => {",
+							"    pm.expect(pm.response.code).to.eql(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.id).eql(pm.environment.get(\"id\"));",
+							"    pm.expect(responseJson.name).eql(pm.environment.get(\"userName\"));",
+							"    pm.expect(responseJson.email).eql(pm.environment.get(\"userEmail\"));",
+							"    pm.expect(responseJson.gender).eql('female')",
+							"    pm.expect(responseJson.status).eql('inactive');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{id}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Gorest API allows to delete user', () => {",
+							"    pm.expect(pm.response.code).to.eql(204);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{id}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
